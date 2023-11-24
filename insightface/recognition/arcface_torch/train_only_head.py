@@ -98,11 +98,27 @@ def main(args):
     backbone = torch.nn.parallel.DistributedDataParallel(
         module=backbone, broadcast_buffers=False, device_ids=[local_rank], bucket_cap_mb=16,
         find_unused_parameters=True)
-    backbone.register_comm_hook(None, fp16_compress_hook)
 
-    backbone.train()
-    # FIXME using gradient checkpoint if there are some unused parameters will cause error
-    backbone._set_static_graph()
+    if cfg.freeze_backbone: 
+        backbone.eval() 
+        for p in backbone.parameters():
+            p.requires_grad = False 
+    else:
+        backbone.train()
+    
+    if cfg.pretrained_backbone is not None: 
+        print("[INFO] Loadding pretrained backbone")
+        original_weight = torch.load(cfg.pretrained_backbone)
+        backbone_dict = dict() 
+        for key in original_weight.keys():
+            backbone_dict["module." + str(key)] = original_weight[key]
+        backbone.load_state_dict(backbone)
+
+    # backbone.register_comm_hook(None, fp16_compress_hook)
+
+    # backbone.train()
+    # # FIXME using gradient checkpoint if there are some unused parameters will cause error
+    # backbone._set_static_graph()
 
     margin_loss = CombinedMarginLoss(
         64,
@@ -144,6 +160,9 @@ def main(args):
 
     start_epoch = 0
     global_step = 0
+
+
+
     if cfg.resume:
         dict_checkpoint = torch.load(os.path.join(cfg.output, f"checkpoint_gpu_{rank}.pt"))
         start_epoch = dict_checkpoint["epoch"]

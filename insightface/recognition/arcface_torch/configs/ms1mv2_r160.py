@@ -14,7 +14,7 @@ config.sample_rate = 1.0
 config.fp16 = True
 config.momentum = 0.9
 config.weight_decay = 5e-4
-config.batch_size = 1
+config.batch_size = 2
 config.lr = 0.1
 config.verbose = 2000
 config.dali = False
@@ -26,3 +26,8 @@ config.num_image = 13
 config.num_epoch = 20
 config.warmup_epoch = 0
 config.val_targets = ['lfw', 'cfp_fp', "agedb_30"]
+
+
+# Freeze backbone 
+config.freeze_backbone = True 
+config.pretrained_backbone = "/data/disk2/tanminh/Evaluate_FIQA_EVR/pretrained/r160_imintv4_statedict.pth"
