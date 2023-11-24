@@ -1,3 +1,8 @@
+*.pt 
+*.jpg
+work_dirs/
+*.zip
+*.tar
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

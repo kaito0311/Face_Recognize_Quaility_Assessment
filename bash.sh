@@ -4,3 +4,7 @@ git sparse-checkout set "recognition/arcface_torch/"
 git fetch origin
 git checkout main
 git pull  
+
+
+
+CUDA_VISIBLE_DEVICES=1 train_v2.py configs/ms1mv2_r100

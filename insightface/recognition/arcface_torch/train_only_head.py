@@ -144,7 +144,6 @@ def main(args):
 
     start_epoch = 0
     global_step = 0
-
     if cfg.resume:
         dict_checkpoint = torch.load(os.path.join(cfg.output, f"checkpoint_gpu_{rank}.pt"))
         start_epoch = dict_checkpoint["epoch"]
